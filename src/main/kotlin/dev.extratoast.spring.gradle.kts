@@ -1,0 +1,36 @@
+plugins {
+    id("dev.extratoast.kotlin")
+    id("org.jetbrains.kotlin.plugin.spring")
+    id("org.springframework.boot")
+    id("io.spring.dependency-management")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.modulith:spring-modulith-bom:1.3.2")
+        mavenBom("org.testcontainers:testcontainers-bom:2.0.5")
+    }
+    dependencies {
+        // Spring Boot can lag jOOQ; keep runtime aligned with the codegen dependency.
+        dependency("org.jooq:jooq:3.21.4")
+    }
+}
+
+dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.crac:crac:1.5.0")
+    runtimeOnly("io.micrometer:micrometer-registry-prometheus")
+    implementation("net.logstash.logback:logstash-logback-encoder:8.0")
+    implementation("org.springframework.cloud:spring-cloud-starter-vault-config:5.0.1")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+    }
+    testImplementation("io.mockk:mockk:1.13.16")
+    testImplementation("org.assertj:assertj-core")
+    testImplementation("com.tngtech.archunit:archunit-junit5:1.4.0")
+}

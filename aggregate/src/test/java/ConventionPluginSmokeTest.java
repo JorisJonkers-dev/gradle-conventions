@@ -77,6 +77,85 @@ class ConventionPluginSmokeTest {
     }
 
     @Test
+    void kotlinPluginCanRegisterResolveAllDependenciesForCacheWarming() throws IOException {
+        writeSettings("kotlin-cache-smoke");
+        writeBuild(
+            """
+            plugins {
+                id("dev.extratoast.kotlin")
+            }
+
+            repositories {
+                mavenCentral()
+            }
+
+            extratoastKotlin {
+                javaToolchain.set(25)
+                allWarningsAsErrors.set(false)
+                registerResolveAllDependencies.set(true)
+            }
+            """
+        );
+
+        BuildResult result = gradle("tasks", "--all").build();
+
+        assertTrue(
+            result.getOutput().contains("resolveAllDependencies"),
+            "Kotlin convention should expose opt-in dependency cache warming."
+        );
+    }
+
+    @Test
+    void springPluginAcceptsConfigurableBomInputs() throws IOException {
+        writeSettings("spring-bom-smoke");
+        writeBuild(
+            """
+            plugins {
+                id("dev.extratoast.spring")
+            }
+
+            repositories {
+                mavenCentral()
+            }
+
+            extratoastSpring {
+                springBootBomVersion.set("4.0.3")
+                springModulithBomVersion.set("")
+                testcontainersBomVersion.set("1.21.4")
+                jacksonBomVersion.set("3.1.0")
+                additionalBoms.set(listOf("org.junit:junit-bom:5.11.4"))
+                jooqVersion.set("")
+                standardDependenciesEnabled.set(false)
+                testDependenciesEnabled.set(false)
+            }
+            """
+        );
+
+        BuildResult result = gradle("dependencyManagement").build();
+
+        assertDependencyManagementContainsVersion(
+            result,
+            "4.0.3",
+            "Spring Boot BOM version should be configurable."
+        );
+        assertDependencyManagementContainsVersion(
+            result,
+            "3.1.0",
+            "Jackson BOM should be opt-in and configurable."
+        );
+        assertDependencyManagementContainsVersion(
+            result,
+            "1.21.4",
+            "Testcontainers BOM version should be configurable."
+        );
+        assertDependencyManagementContainsVersion(
+            result,
+            "5.11.4",
+            "Additional BOM coordinates should be imported."
+        );
+    }
+
+    @Test
     void jooqCodegenPluginGeneratesSourcesFromMigrations() throws IOException {
         writeSettings("jooq-smoke");
         writeBuild(
@@ -174,6 +253,49 @@ class ConventionPluginSmokeTest {
         );
     }
 
+    @Test
+    void testingPluginCanRegisterCustomIntegrationCoverageGates() throws IOException {
+        writeSettings("testing-split-smoke");
+        writeBuild(
+            """
+            plugins {
+                id("dev.extratoast.testing")
+            }
+
+            repositories {
+                mavenCentral()
+            }
+
+            extratoastTesting {
+                testExcludedTags.set(listOf("system"))
+                integrationTestIncludedTags.set(emptyList())
+                integrationTestExcludedTags.set(listOf("system", "brevo-live", "discord-live"))
+                coverageExclusionPatterns.set(listOf("**/dto/**"))
+                unitCoverageMinimum.set("0.40".toBigDecimal())
+                integrationCoverageMinimum.set("0.40".toBigDecimal())
+                separateIntegrationCoverage.set(true)
+            }
+            """
+        );
+
+        BuildResult result = gradle(
+            "-Pextratoast.testing.integrationTestSourceSet=functionalTest",
+            "-Pextratoast.testing.integrationTestTask=functionalTest",
+            "tasks",
+            "--all"
+        ).build();
+
+        assertTrue(result.getOutput().contains("functionalTest"), "Custom integration test task should exist.");
+        assertTrue(
+            result.getOutput().contains("jacocoIntegrationTestReport"),
+            "Integration JaCoCo report task should be registered."
+        );
+        assertTrue(
+            result.getOutput().contains("jacocoIntegrationTestCoverageVerification"),
+            "Integration JaCoCo coverage gate should be registered."
+        );
+    }
+
     private void writeSettings(String rootProjectName) throws IOException {
         Files.writeString(
             projectDir.resolve("settings.gradle.kts"),
@@ -222,6 +344,14 @@ class ConventionPluginSmokeTest {
         try (Stream<Path> paths = Files.walk(directory)) {
             return paths.anyMatch(path -> path.toString().endsWith(".java"));
         }
+    }
+
+    private static void assertDependencyManagementContainsVersion(
+        BuildResult result,
+        String version,
+        String message
+    ) {
+        assertTrue(result.getOutput().contains(version), message);
     }
 
     private static List<File> pluginClasspath() {

@@ -9,6 +9,8 @@ plugins {
 
 interface ExtratoastKotlinConventionExtension {
     val javaToolchain: Property<Int>
+    val allWarningsAsErrors: Property<Boolean>
+    val registerResolveAllDependencies: Property<Boolean>
 }
 
 val extratoastKotlin =
@@ -18,6 +20,20 @@ val extratoastKotlin =
             providers.gradleProperty("extratoast.java.toolchain")
                 .map(String::toInt)
                 .orElse(21),
+        )
+        allWarningsAsErrors.convention(
+            providers.gradleProperty("extratoast.kotlin.allWarningsAsErrors")
+                .map(String::toBoolean)
+                .orElse(true),
+        )
+        registerResolveAllDependencies.convention(
+            providers.gradleProperty("extratoast.kotlin.resolveAllDependencies")
+                .map(String::toBoolean)
+                .orElse(
+                    providers.gradleProperty("extratoast.resolveAllDependencies.enabled")
+                        .map(String::toBoolean)
+                        .orElse(false),
+                ),
         )
     }
 
@@ -33,11 +49,30 @@ kotlin {
     }
 
     compilerOptions {
-        freeCompilerArgs.addAll("-Xjsr305=strict", "-Werror")
+        freeCompilerArgs.add("-Xjsr305=strict")
+        allWarningsAsErrors.set(extratoastKotlin.allWarningsAsErrors)
         jvmTarget.set(extratoastKotlin.javaToolchain.map { JvmTarget.fromTarget(it.toString()) })
     }
 }
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+}
+
+afterEvaluate {
+    if (extratoastKotlin.registerResolveAllDependencies.get() && tasks.findByName("resolveAllDependencies") == null) {
+        tasks.register("resolveAllDependencies") {
+            description = "Resolves every resolvable configuration to warm the Gradle cache."
+            group = "build setup"
+            notCompatibleWithConfigurationCache("Resolves configurations at execution time.")
+            doLast {
+                configurations
+                    .matching { it.isCanBeResolved }
+                    .forEach { configuration ->
+                        runCatching { configuration.resolve() }
+                            .onFailure { logger.warn("Skipping ${configuration.name}: ${it.message}") }
+                    }
+            }
+        }
+    }
 }

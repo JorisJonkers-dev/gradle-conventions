@@ -23,7 +23,7 @@ val jooqCodegen =
         // These default to the org migration layout, but consumers can override them per project.
         schemaName.convention(providers.gradleProperty("extratoast.jooq.schema").orElse("public"))
         packageName.convention(
-            providers.gradleProperty("extratoast.jooq.package").orElse("dev.extratoast.jooq.generated"),
+            providers.gradleProperty("extratoast.jooq.package").orElse("dev.jorisjonkers.jooq.generated"),
         )
         migrationLocations.convention(
             providers

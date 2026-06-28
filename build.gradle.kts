@@ -78,22 +78,8 @@ subprojects {
                     artifactId = moduleArtifactId
                 }
             }
-            if (moduleArtifactId != null) {
-                publications.create<MavenPublication>("legacyMaven") {
-                    from(components["java"])
-                    groupId = "dev.extratoast"
-                    artifactId = moduleArtifactId
-                    version = project.version.toString()
-                }
-            }
         }
     }
-
-    tasks
-        .matching { it.name == "generateMetadataFileForLegacyMavenPublication" }
-        .configureEach {
-            enabled = false
-        }
 
     tasks.withType(Test::class.java).configureEach {
         useJUnitPlatform()

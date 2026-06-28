@@ -67,9 +67,7 @@ plugins {
 }
 ```
 
-GitHub Packages access requires credentials with package read access. Legacy
-`dev.extratoast.*` plugin aliases and `dev.extratoast:gradle-conventions-*`
-implementation modules are published temporarily for migration.
+GitHub Packages access requires credentials with package read access.
 
 ## Configuration
 
@@ -106,7 +104,7 @@ extratoast.testing.integrationCoverageMinimum=0.80
 extratoast.testing.separateIntegrationCoverage=false
 extratoast.testing.checkDependsOnCoverage=true
 extratoast.jooq.schema=public
-extratoast.jooq.package=dev.extratoast.jooq.generated
+extratoast.jooq.package=dev.jorisjonkers.jooq.generated
 extratoast.jooq.migrationLocations=filesystem:src/main/resources/db/migration
 extratoast.jooq.outputDirectory=generated/jooq
 ```

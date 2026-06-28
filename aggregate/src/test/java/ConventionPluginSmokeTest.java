@@ -55,30 +55,6 @@ class ConventionPluginSmokeTest {
     }
 
     @Test
-    void legacyPluginAliasesRegisterTheirTasks() throws IOException {
-        writeSettings("legacy-smoke");
-        writeBuild(
-            """
-            plugins {
-                id("dev.extratoast.kotlin")
-                id("dev.extratoast.detekt")
-                id("dev.extratoast.ktlint")
-            }
-
-            repositories {
-                mavenCentral()
-            }
-            """
-        );
-
-        BuildResult result = gradle("tasks", "--all").build();
-
-        assertTrue(result.getOutput().contains("compileKotlin"), "Legacy Kotlin alias should register Kotlin tasks.");
-        assertTrue(result.getOutput().contains("detekt"), "Legacy Detekt alias should register Detekt tasks.");
-        assertTrue(result.getOutput().contains("ktlintCheck"), "Legacy Ktlint alias should register Ktlint tasks.");
-    }
-
-    @Test
     void springPluginRegistersSpringBootTasks() throws IOException {
         writeSettings("spring-smoke");
         writeBuild(

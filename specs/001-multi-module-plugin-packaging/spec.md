@@ -2,10 +2,10 @@
 
 ## Overview
 `gradle-conventions` currently publishes the convention plugins as a single
-consolidated jar (`dev.extratoast:gradle-conventions`). Consumers must take the
+consolidated jar (`dev.jorisjonkers:gradle-conventions`). Consumers must take the
 whole bundle, and an earlier attempt that relied on Gradle plugin-marker
 artifacts produced ugly doubled package names
-(`dev.extratoast.kotlin.dev.extratoast.kotlin.gradle.plugin`). This feature
+(`dev.jorisjonkers.kotlin.dev.jorisjonkers.kotlin.gradle.plugin`). This feature
 restructures the project so each convention plugin is published as its own small
 Maven module with a short, clean coordinate, individually consumable, while
 still offering a one-line way to pull the full set — and without publishing any
@@ -24,16 +24,16 @@ plugin-marker artifacts.
 
 ## Functional Requirements
 - FR-1: Each convention plugin is published as a separate Maven module with a
-  short coordinate of the form `dev.extratoast:gradle-conventions-<name>` for
+  short coordinate of the form `dev.jorisjonkers:gradle-conventions-<name>` for
   names: `kotlin`, `detekt`, `ktlint`, `spring`, `testing`, `test-logging`,
   `jooq-codegen`.
-- FR-2: An aggregate module `dev.extratoast:gradle-conventions` is published that
+- FR-2: An aggregate module `dev.jorisjonkers:gradle-conventions` is published that
   transitively brings in all per-plugin modules, so a consumer can opt into the
   full set with one coordinate.
 - FR-3: No Gradle plugin-marker artifacts (`*.gradle.plugin`) are published from
   any module.
 - FR-4: Each per-plugin module continues to expose the same plugin id
-  (`dev.extratoast.<name>`) and the same behaviour/opt-in extensions it has
+  (`dev.jorisjonkers.<name>`) and the same behaviour/opt-in extensions it has
   today.
 - FR-5: Consumers resolve plugin ids to the per-plugin modules via
   `pluginManagement.resolutionStrategy.eachPlugin` (documented in the README),
@@ -44,7 +44,7 @@ plugin-marker artifacts.
 ## Success Criteria
 - SC-1: After a release, the org Packages page shows exactly the per-plugin
   modules plus the aggregate — and zero `*.gradle.plugin` entries.
-- SC-2: A consumer can apply `id("dev.extratoast.kotlin")` having declared only
+- SC-2: A consumer can apply `id("dev.jorisjonkers.kotlin")` having declared only
   the `eachPlugin` mapping (no marker repo, no full-bundle dependency) and the
   build resolves.
 - SC-3: A consumer can depend on a strict subset of plugins and the unused
@@ -63,9 +63,9 @@ plugin-marker artifacts.
   must resolve to a single consistent version (FR-6).
 
 ## Key Entities
-- Per-plugin module: groupId `dev.extratoast`, artifactId
+- Per-plugin module: groupId `dev.jorisjonkers`, artifactId
   `gradle-conventions-<name>`, contains one precompiled script plugin.
-- Aggregate module: `dev.extratoast:gradle-conventions`, depends on all
+- Aggregate module: `dev.jorisjonkers:gradle-conventions`, depends on all
   per-plugin modules.
 
 ## Out of Scope

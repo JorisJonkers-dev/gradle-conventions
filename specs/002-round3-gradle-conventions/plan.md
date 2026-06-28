@@ -48,11 +48,11 @@ specs/002-round3-gradle-conventions/
 ### Source Code
 
 ```text
-plugins/kotlin/src/main/kotlin/dev.extratoast.kotlin.gradle.kts
-plugins/spring/src/main/kotlin/dev.extratoast.spring.gradle.kts
-plugins/testing/src/main/kotlin/dev.extratoast.testing.gradle.kts
-plugins/detekt/src/main/kotlin/dev.extratoast.detekt.gradle.kts
-plugins/ktlint/src/main/kotlin/dev.extratoast.ktlint.gradle.kts
+plugins/kotlin/src/main/kotlin/dev.jorisjonkers.kotlin.gradle.kts
+plugins/spring/src/main/kotlin/dev.jorisjonkers.spring.gradle.kts
+plugins/testing/src/main/kotlin/dev.jorisjonkers.testing.gradle.kts
+plugins/detekt/src/main/kotlin/dev.jorisjonkers.detekt.gradle.kts
+plugins/ktlint/src/main/kotlin/dev.jorisjonkers.ktlint.gradle.kts
 aggregate/src/test/java/ConventionPluginSmokeTest.java
 README.md
 ```

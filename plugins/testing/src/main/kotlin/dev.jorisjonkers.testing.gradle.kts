@@ -1,13 +1,13 @@
-import java.math.BigDecimal
 import org.gradle.api.file.FileCollection
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.testing.Test
+import java.math.BigDecimal
 
 plugins {
     java
     jacoco
-    id("dev.extratoast.test-logging")
+    id("dev.jorisjonkers.test-logging")
 }
 
 jacoco {
@@ -15,7 +15,8 @@ jacoco {
 }
 
 fun csvProperty(name: String) =
-    providers.gradleProperty(name)
+    providers
+        .gradleProperty(name)
         .map { value -> value.split(",").map(String::trim).filter(String::isNotEmpty) }
 
 interface ExtratoastTestingConventionExtension {
@@ -47,27 +48,32 @@ val extratoastTesting =
             csvProperty("extratoast.testing.coverageExclusions").orElse(emptyList()),
         )
         aggregateCoverageMinimum.convention(
-            providers.gradleProperty("extratoast.testing.aggregateCoverageMinimum")
+            providers
+                .gradleProperty("extratoast.testing.aggregateCoverageMinimum")
                 .map(String::toBigDecimal)
                 .orElse(BigDecimal("0.80")),
         )
         unitCoverageMinimum.convention(
-            providers.gradleProperty("extratoast.testing.unitCoverageMinimum")
+            providers
+                .gradleProperty("extratoast.testing.unitCoverageMinimum")
                 .map(String::toBigDecimal)
                 .orElse(BigDecimal("0.80")),
         )
         integrationCoverageMinimum.convention(
-            providers.gradleProperty("extratoast.testing.integrationCoverageMinimum")
+            providers
+                .gradleProperty("extratoast.testing.integrationCoverageMinimum")
                 .map(String::toBigDecimal)
                 .orElse(BigDecimal("0.80")),
         )
         separateIntegrationCoverage.convention(
-            providers.gradleProperty("extratoast.testing.separateIntegrationCoverage")
+            providers
+                .gradleProperty("extratoast.testing.separateIntegrationCoverage")
                 .map(String::toBoolean)
                 .orElse(false),
         )
         checkDependsOnCoverage.convention(
-            providers.gradleProperty("extratoast.testing.checkDependsOnCoverage")
+            providers
+                .gradleProperty("extratoast.testing.checkDependsOnCoverage")
                 .map(String::toBoolean)
                 .orElse(true),
         )
@@ -82,11 +88,13 @@ val defaultJacocoExclusions =
     )
 
 val integrationTestSourceSetName =
-    providers.gradleProperty("extratoast.testing.integrationTestSourceSet")
+    providers
+        .gradleProperty("extratoast.testing.integrationTestSourceSet")
         .orElse("integrationTest")
         .get()
 val integrationTestTaskName =
-    providers.gradleProperty("extratoast.testing.integrationTestTask")
+    providers
+        .gradleProperty("extratoast.testing.integrationTestTask")
         .orElse(integrationTestSourceSetName)
         .get()
 
@@ -100,14 +108,15 @@ sourceSets {
 configurations["${integrationTestSourceSetName}Implementation"].extendsFrom(configurations.testImplementation.get())
 configurations["${integrationTestSourceSetName}RuntimeOnly"].extendsFrom(configurations.testRuntimeOnly.get())
 
-val integrationTest = tasks.register<Test>(integrationTestTaskName) {
-    description = "Runs integration tests."
-    group = "verification"
-    testClassesDirs = sourceSets[integrationTestSourceSetName].output.classesDirs
-    classpath = sourceSets[integrationTestSourceSetName].runtimeClasspath
-    useJUnitPlatform()
-    shouldRunAfter(tasks.test)
-}
+val integrationTest =
+    tasks.register<Test>(integrationTestTaskName) {
+        description = "Runs integration tests."
+        group = "verification"
+        testClassesDirs = sourceSets[integrationTestSourceSetName].output.classesDirs
+        classpath = sourceSets[integrationTestSourceSetName].runtimeClasspath
+        useJUnitPlatform()
+        shouldRunAfter(tasks.test)
+    }
 
 fun filteredClassDirectories(exclusions: List<String>): FileCollection =
     files(
@@ -199,12 +208,20 @@ afterEvaluate {
             dependsOn(tasks.test, integrationTest)
             executionData.setFrom(fileTree(layout.buildDirectory) { include("jacoco/*.exec") })
         }
-        sourceDirectories.setFrom(sourceSets.main.get().allSource.srcDirs)
+        sourceDirectories.setFrom(
+            sourceSets.main
+                .get()
+                .allSource.srcDirs,
+        )
         classDirectories.setFrom(filteredClasses)
     }
 
     tasks.named<JacocoReport>("jacocoIntegrationTestReport") {
-        sourceDirectories.setFrom(sourceSets.main.get().allSource.srcDirs)
+        sourceDirectories.setFrom(
+            sourceSets.main
+                .get()
+                .allSource.srcDirs,
+        )
         classDirectories.setFrom(filteredClasses)
     }
 
@@ -215,7 +232,11 @@ afterEvaluate {
             dependsOn(integrationTest)
             executionData.setFrom(fileTree(layout.buildDirectory) { include("jacoco/*.exec") })
         }
-        sourceDirectories.setFrom(sourceSets.main.get().allSource.srcDirs)
+        sourceDirectories.setFrom(
+            sourceSets.main
+                .get()
+                .allSource.srcDirs,
+        )
         classDirectories.setFrom(filteredClasses)
         violationRules {
             rule {
@@ -234,7 +255,11 @@ afterEvaluate {
     }
 
     tasks.named<JacocoCoverageVerification>("jacocoIntegrationTestCoverageVerification") {
-        sourceDirectories.setFrom(sourceSets.main.get().allSource.srcDirs)
+        sourceDirectories.setFrom(
+            sourceSets.main
+                .get()
+                .allSource.srcDirs,
+        )
         classDirectories.setFrom(filteredClasses)
         violationRules {
             rule {

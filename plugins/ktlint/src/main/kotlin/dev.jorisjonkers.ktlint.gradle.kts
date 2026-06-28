@@ -13,12 +13,14 @@ interface ExtratoastKtlintConventionExtension {
 val extratoastKtlint =
     extensions.create<ExtratoastKtlintConventionExtension>("extratoastKtlint").apply {
         includePatterns.convention(
-            providers.gradleProperty("extratoast.ktlint.includes")
+            providers
+                .gradleProperty("extratoast.ktlint.includes")
                 .map { value -> value.split(",").map(String::trim).filter(String::isNotEmpty) }
                 .orElse(emptyList()),
         )
         excludePatterns.convention(
-            providers.gradleProperty("extratoast.ktlint.excludes")
+            providers
+                .gradleProperty("extratoast.ktlint.excludes")
                 .map { value -> value.split(",").map(String::trim).filter(String::isNotEmpty) }
                 .orElse(listOf("**/generated/**", "**/build/**")),
         )

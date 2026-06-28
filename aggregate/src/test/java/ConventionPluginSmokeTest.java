@@ -25,9 +25,9 @@ class ConventionPluginSmokeTest {
         writeBuild(
             """
             plugins {
-                id("dev.extratoast.kotlin")
-                id("dev.extratoast.detekt")
-                id("dev.extratoast.ktlint")
+                id("dev.jorisjonkers.kotlin")
+                id("dev.jorisjonkers.detekt")
+                id("dev.jorisjonkers.ktlint")
             }
 
             repositories {
@@ -36,12 +36,12 @@ class ConventionPluginSmokeTest {
             """
         );
 
-        Path sourceDirectory = projectDir.resolve("src/main/kotlin/dev/extratoast/smoke");
+        Path sourceDirectory = projectDir.resolve("src/main/kotlin/dev/jorisjonkers/smoke");
         Files.createDirectories(sourceDirectory);
         Files.writeString(
             sourceDirectory.resolve("Smoke.kt"),
             """
-            package dev.extratoast.smoke
+            package dev.jorisjonkers.smoke
 
             class Smoke
             """.stripIndent()
@@ -60,7 +60,7 @@ class ConventionPluginSmokeTest {
         writeBuild(
             """
             plugins {
-                id("dev.extratoast.spring")
+                id("dev.jorisjonkers.spring")
             }
 
             repositories {
@@ -82,7 +82,7 @@ class ConventionPluginSmokeTest {
         writeBuild(
             """
             plugins {
-                id("dev.extratoast.kotlin")
+                id("dev.jorisjonkers.kotlin")
             }
 
             repositories {
@@ -111,7 +111,7 @@ class ConventionPluginSmokeTest {
         writeBuild(
             """
             plugins {
-                id("dev.extratoast.spring")
+                id("dev.jorisjonkers.spring")
             }
 
             repositories {
@@ -161,7 +161,7 @@ class ConventionPluginSmokeTest {
         writeBuild(
             """
             plugins {
-                id("dev.extratoast.jooq-codegen")
+                id("dev.jorisjonkers.jooq-codegen")
             }
 
             repositories {
@@ -195,7 +195,7 @@ class ConventionPluginSmokeTest {
         writeBuild(
             """
             plugins {
-                id("dev.extratoast.testing")
+                id("dev.jorisjonkers.testing")
             }
 
             repositories {
@@ -210,12 +210,12 @@ class ConventionPluginSmokeTest {
             }
             """
         );
-        Path sourceDirectory = projectDir.resolve("src/main/java/dev/extratoast/smoke");
+        Path sourceDirectory = projectDir.resolve("src/main/java/dev/jorisjonkers/smoke");
         Files.createDirectories(sourceDirectory);
         Files.writeString(
             sourceDirectory.resolve("CoveredType.java"),
             """
-            package dev.extratoast.smoke;
+            package dev.jorisjonkers.smoke;
 
             public class CoveredType {
                 public String message() {
@@ -224,12 +224,12 @@ class ConventionPluginSmokeTest {
             }
             """.stripIndent()
         );
-        Path testDirectory = projectDir.resolve("src/test/java/dev/extratoast/smoke");
+        Path testDirectory = projectDir.resolve("src/test/java/dev/jorisjonkers/smoke");
         Files.createDirectories(testDirectory);
         Files.writeString(
             testDirectory.resolve("CoveredTypeTest.java"),
             """
-            package dev.extratoast.smoke;
+            package dev.jorisjonkers.smoke;
 
             import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -259,7 +259,7 @@ class ConventionPluginSmokeTest {
         writeBuild(
             """
             plugins {
-                id("dev.extratoast.testing")
+                id("dev.jorisjonkers.testing")
             }
 
             repositories {

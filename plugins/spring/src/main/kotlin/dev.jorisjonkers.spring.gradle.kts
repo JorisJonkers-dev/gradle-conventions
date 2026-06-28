@@ -2,7 +2,7 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 
 plugins {
-    id("dev.extratoast.kotlin")
+    id("dev.jorisjonkers.kotlin")
     id("org.jetbrains.kotlin.plugin.spring")
     id("org.springframework.boot")
     id("io.spring.dependency-management")
@@ -35,7 +35,8 @@ val extratoastSpring =
         )
         jacksonBomVersion.convention(providers.gradleProperty("extratoast.spring.jacksonBomVersion").orElse(""))
         additionalBoms.convention(
-            providers.gradleProperty("extratoast.spring.additionalBoms")
+            providers
+                .gradleProperty("extratoast.spring.additionalBoms")
                 .map { value -> value.split(",").map(String::trim).filter(String::isNotEmpty) }
                 .orElse(emptyList()),
         )
@@ -50,12 +51,14 @@ val extratoastSpring =
         mockkVersion.convention(providers.gradleProperty("extratoast.spring.mockkVersion").orElse("1.13.16"))
         archunitVersion.convention(providers.gradleProperty("extratoast.spring.archunitVersion").orElse("1.4.0"))
         standardDependenciesEnabled.convention(
-            providers.gradleProperty("extratoast.spring.standardDependenciesEnabled")
+            providers
+                .gradleProperty("extratoast.spring.standardDependenciesEnabled")
                 .map(String::toBoolean)
                 .orElse(true),
         )
         testDependenciesEnabled.convention(
-            providers.gradleProperty("extratoast.spring.testDependenciesEnabled")
+            providers
+                .gradleProperty("extratoast.spring.testDependenciesEnabled")
                 .map(String::toBoolean)
                 .orElse(true),
         )
@@ -95,8 +98,12 @@ afterEvaluate {
             implementation("org.jetbrains.kotlin:kotlin-reflect")
             implementation("org.crac:crac:${extratoastSpring.cracVersion.get()}")
             runtimeOnly("io.micrometer:micrometer-registry-prometheus")
-            implementation("net.logstash.logback:logstash-logback-encoder:${extratoastSpring.logstashLogbackEncoderVersion.get()}")
-            implementation("org.springframework.cloud:spring-cloud-starter-vault-config:${extratoastSpring.springCloudVaultVersion.get()}")
+            implementation(
+                "net.logstash.logback:logstash-logback-encoder:${extratoastSpring.logstashLogbackEncoderVersion.get()}",
+            )
+            implementation(
+                "org.springframework.cloud:spring-cloud-starter-vault-config:${extratoastSpring.springCloudVaultVersion.get()}",
+            )
         }
     }
 

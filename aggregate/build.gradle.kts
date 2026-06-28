@@ -48,7 +48,12 @@ tasks.test {
         jacocoDestFile.parentFile.mkdirs()
         jacocoDestFile.delete()
 
-        systemProperty("pluginClasspath", sourceSets.test.get().runtimeClasspath.asPath)
+        systemProperty(
+            "pluginClasspath",
+            sourceSets.test
+                .get()
+                .runtimeClasspath.asPath,
+        )
         systemProperty("jacocoAgentJar", testKitJacocoAgent.singleFile.absolutePath)
         systemProperty("jacocoDestFile", jacocoDestFile.absolutePath)
     }

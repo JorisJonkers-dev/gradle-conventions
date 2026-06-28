@@ -23,24 +23,24 @@ gates, Detekt/Ktlint paths, and optional dependency resolution.
   forks.
 
 ## Functional Requirements
-- FR-1: `dev.extratoast.kotlin` supports configurable Java toolchains,
+- FR-1: `dev.jorisjonkers.kotlin` supports configurable Java toolchains,
   compiler warning policy, and an optional `resolveAllDependencies` task.
-- FR-2: `dev.extratoast.spring` keeps existing default dependencies but exposes
+- FR-2: `dev.jorisjonkers.spring` keeps existing default dependencies but exposes
   configurable Spring/Testcontainers/Jackson/Modulith/jOOQ BOM or dependency
   inputs.
-- FR-3: `dev.extratoast.testing` supports configurable integration-test source
+- FR-3: `dev.jorisjonkers.testing` supports configurable integration-test source
   set/task naming, JUnit tag filters, generated-code exclusions, and
   unit/integration/aggregate coverage thresholds.
-- FR-4: `dev.extratoast.detekt` uses a conventional Detekt path only when the
+- FR-4: `dev.jorisjonkers.detekt` uses a conventional Detekt path only when the
   file exists unless a consumer explicitly requires it.
-- FR-5: `dev.extratoast.ktlint` exposes include/exclude path filters while
+- FR-5: `dev.jorisjonkers.ktlint` exposes include/exclude path filters while
   preserving generated/build output exclusions.
 - FR-6: Existing plugin ids, Maven module coordinates, and default behavior
   remain backward-compatible for current consumers.
 
 ## Success Criteria
 - SC-1: A consumer can configure Java 25 and register
-  `resolveAllDependencies` through `dev.extratoast.kotlin`.
+  `resolveAllDependencies` through `dev.jorisjonkers.kotlin`.
 - SC-2: A consumer can override Spring BOM versions without editing shared
   plugin code.
 - SC-3: A consumer can run separate unit and integration JaCoCo report/gate

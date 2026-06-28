@@ -15,7 +15,8 @@ val extratoastDetekt =
         // Keeps the org config layout as the default while letting consumers opt out.
         configPath.convention(providers.gradleProperty("extratoast.detekt.config").orElse("config/detekt/detekt.yml"))
         requiredConfigFile.convention(
-            providers.gradleProperty("extratoast.detekt.requiredConfigFile")
+            providers
+                .gradleProperty("extratoast.detekt.requiredConfigFile")
                 .map(String::toBoolean)
                 .orElse(false),
         )
@@ -28,7 +29,10 @@ configure<DetektExtension> {
 
 afterEvaluate {
     configure<DetektExtension> {
-        val configFile = rootProject.layout.projectDirectory.file(extratoastDetekt.configPath.get()).asFile
+        val configFile =
+            rootProject.layout.projectDirectory
+                .file(extratoastDetekt.configPath.get())
+                .asFile
         if (configFile.isFile || extratoastDetekt.requiredConfigFile.get()) {
             config.setFrom(configFile)
         }

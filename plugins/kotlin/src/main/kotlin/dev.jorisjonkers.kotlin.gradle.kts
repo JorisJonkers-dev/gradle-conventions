@@ -17,20 +17,24 @@ val extratoastKotlin =
     extensions.create<ExtratoastKotlinConventionExtension>("extratoastKotlin").apply {
         // Consumers can override the default org toolchain with -Pextratoast.java.toolchain=17.
         javaToolchain.convention(
-            providers.gradleProperty("extratoast.java.toolchain")
+            providers
+                .gradleProperty("extratoast.java.toolchain")
                 .map(String::toInt)
                 .orElse(21),
         )
         allWarningsAsErrors.convention(
-            providers.gradleProperty("extratoast.kotlin.allWarningsAsErrors")
+            providers
+                .gradleProperty("extratoast.kotlin.allWarningsAsErrors")
                 .map(String::toBoolean)
                 .orElse(true),
         )
         registerResolveAllDependencies.convention(
-            providers.gradleProperty("extratoast.kotlin.resolveAllDependencies")
+            providers
+                .gradleProperty("extratoast.kotlin.resolveAllDependencies")
                 .map(String::toBoolean)
                 .orElse(
-                    providers.gradleProperty("extratoast.resolveAllDependencies.enabled")
+                    providers
+                        .gradleProperty("extratoast.resolveAllDependencies.enabled")
                         .map(String::toBoolean)
                         .orElse(false),
                 ),

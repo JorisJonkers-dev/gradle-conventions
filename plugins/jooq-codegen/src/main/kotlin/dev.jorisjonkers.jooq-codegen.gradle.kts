@@ -22,14 +22,18 @@ val jooqCodegen =
     extensions.create<JooqCodegenExtension>("jooqCodegen").apply {
         // These default to the org migration layout, but consumers can override them per project.
         schemaName.convention(providers.gradleProperty("extratoast.jooq.schema").orElse("public"))
-        packageName.convention(providers.gradleProperty("extratoast.jooq.package").orElse("dev.extratoast.jooq.generated"))
+        packageName.convention(
+            providers.gradleProperty("extratoast.jooq.package").orElse("dev.jorisjonkers.jooq.generated"),
+        )
         migrationLocations.convention(
-            providers.gradleProperty("extratoast.jooq.migrationLocations")
+            providers
+                .gradleProperty("extratoast.jooq.migrationLocations")
                 .map { value -> value.split(",").map(String::trim).filter(String::isNotEmpty) }
                 .orElse(listOf("filesystem:src/main/resources/db/migration")),
         )
         outputDirectory.convention(
-            providers.gradleProperty("extratoast.jooq.outputDirectory")
+            providers
+                .gradleProperty("extratoast.jooq.outputDirectory")
                 .orElse("generated/jooq")
                 .map { layout.buildDirectory.dir(it).get() },
         )
@@ -57,12 +61,17 @@ val generateJooq by tasks.registering {
     doLast {
         val schema = jooqCodegen.schemaName.get()
         val pkg = jooqCodegen.packageName.get()
-        val outDir = jooqCodegen.outputDirectory.get().asFile.also { it.mkdirs() }
+        val outDir =
+            jooqCodegen.outputDirectory
+                .get()
+                .asFile
+                .also { it.mkdirs() }
 
-        val scripts = jooqCodegen.migrationLocations.get().joinToString(";") { location ->
-            val path = location.removePrefix("filesystem:")
-            projectDirectory.dir(path).asFile.absolutePath + "/*.sql"
-        }
+        val scripts =
+            jooqCodegen.migrationLocations.get().joinToString(";") { location ->
+                val path = location.removePrefix("filesystem:")
+                projectDirectory.dir(path).asFile.absolutePath + "/*.sql"
+            }
 
         GenerationTool.generate(
             Configuration()
@@ -74,15 +83,22 @@ val generateJooq by tasks.registering {
                                 .withInputSchema(schema)
                                 .withProperties(
                                     listOf(
-                                        org.jooq.meta.jaxb.Property().withKey("scripts").withValue(scripts),
-                                        org.jooq.meta.jaxb.Property().withKey("sort").withValue("flyway"),
-                                        org.jooq.meta.jaxb.Property().withKey("defaultNameCase").withValue("lower"),
+                                        org.jooq.meta.jaxb
+                                            .Property()
+                                            .withKey("scripts")
+                                            .withValue(scripts),
+                                        org.jooq.meta.jaxb
+                                            .Property()
+                                            .withKey("sort")
+                                            .withValue("flyway"),
+                                        org.jooq.meta.jaxb
+                                            .Property()
+                                            .withKey("defaultNameCase")
+                                            .withValue("lower"),
                                     ),
-                                )
-                                .withIncludes(".*")
+                                ).withIncludes(".*")
                                 .withExcludes("flyway_schema_history"),
-                        )
-                        .withTarget(
+                        ).withTarget(
                             Target()
                                 .withPackageName(pkg)
                                 .withDirectory(outDir.absolutePath),

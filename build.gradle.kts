@@ -2,7 +2,6 @@ import groovy.json.JsonSlurper
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.api.publish.maven.tasks.PublishToMavenRepository
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.testing.Test
 import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
@@ -13,7 +12,7 @@ plugins {
     jacoco
 }
 
-group = "dev.extratoast"
+group = "dev.jorisjonkers"
 version = releasePleaseVersion()
 
 jacoco {
@@ -66,7 +65,7 @@ subprojects {
             repositories {
                 maven {
                     name = "GitHubPackages"
-                    url = uri("https://maven.pkg.github.com/ExtraToast/gradle-conventions")
+                    url = uri("https://maven.pkg.github.com/JorisJonkers-dev/gradle-conventions")
                     credentials {
                         username = System.getenv("GITHUB_ACTOR")
                         password = System.getenv("GITHUB_TOKEN")
@@ -79,14 +78,22 @@ subprojects {
                     artifactId = moduleArtifactId
                 }
             }
+            if (moduleArtifactId != null) {
+                publications.create<MavenPublication>("legacyMaven") {
+                    from(components["java"])
+                    groupId = "dev.extratoast"
+                    artifactId = moduleArtifactId
+                    version = project.version.toString()
+                }
+            }
         }
     }
 
-    if (path in pluginProjectPaths) {
-        tasks.withType(PublishToMavenRepository::class.java).configureEach {
-            onlyIf { publication.name == "pluginMaven" }
+    tasks
+        .matching { it.name == "generateMetadataFileForLegacyMavenPublication" }
+        .configureEach {
+            enabled = false
         }
-    }
 
     tasks.withType(Test::class.java).configureEach {
         useJUnitPlatform()
@@ -132,7 +139,13 @@ tasks.check {
 gradle.projectsEvaluated {
     val pluginMainSourceSets =
         pluginProjectPaths
-            .map { project(it).extensions.getByType(SourceSetContainer::class.java).named("main").get() }
+            .map {
+                project(it)
+                    .extensions
+                    .getByType(SourceSetContainer::class.java)
+                    .named("main")
+                    .get()
+            }
 
     val pluginClassDirectories =
         files(

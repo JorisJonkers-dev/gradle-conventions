@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.4.0...v0.5.0) (2026-06-28)
+
+
+### Features
+
+* publish JorisJonkers Gradle convention plugin ids ([#3](https://github.com/JorisJonkers-dev/gradle-conventions/issues/3)) ([a19a301](https://github.com/JorisJonkers-dev/gradle-conventions/commit/a19a301adc2bc5a2d7bfa1d21f451115193288d7))
+
 ## [0.4.0](https://github.com/ExtraToast/gradle-conventions/compare/v0.3.0...v0.4.0) (2026-06-09)
 
 

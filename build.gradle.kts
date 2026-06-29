@@ -74,6 +74,17 @@ subprojects {
             }
 
             publications.withType(MavenPublication::class.java).configureEach {
+                pom {
+                    licenses {
+                        license {
+                            name.set("Joris Jonkers Proprietary Source-Available License 1.0")
+                            url.set("https://github.com/JorisJonkers-dev/gradle-conventions/blob/main/LICENSE")
+                            distribution.set("repo")
+                            comments.set("SPDX-License-Identifier: LicenseRef-JorisJonkers-Proprietary-1.0")
+                        }
+                    }
+                }
+
                 if (moduleArtifactId != null && (project.path == ":aggregate" || name == "pluginMaven")) {
                     artifactId = moduleArtifactId
                 }

@@ -162,6 +162,8 @@ tasks.jacocoTestCoverageVerification {
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
     jvmArgs(
+        "-XX:+EnableDynamicAgentLoading",
+        "-Xshare:off",
         "--add-opens",
         "java.base/java.lang=ALL-UNNAMED",
         "--add-opens",

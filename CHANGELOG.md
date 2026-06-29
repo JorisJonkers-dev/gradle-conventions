@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.5](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.5.4...v0.5.5) (2026-06-29)
+
+
+### Bug Fixes
+
+* continue after published coordinate conflicts ([#13](https://github.com/JorisJonkers-dev/gradle-conventions/issues/13)) ([d247435](https://github.com/JorisJonkers-dev/gradle-conventions/commit/d247435b4411d60688661333ede65204eaa51092))
+
 ## [0.5.4](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.5.3...v0.5.4) (2026-06-29)
 
 

@@ -58,7 +58,39 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: gradle
+      - name: Check existing GitHub Packages version
+        id: package-version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGE_NAME: dev.jorisjonkers.gradle-conventions
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          version="$(jq --raw-output '."." // empty' .release-please-manifest.json)"
+          if [[ -z "${version}" ]]; then
+            echo "::error::.release-please-manifest.json does not contain a root package version"
+            exit 1
+          fi
+
+          api_error="${RUNNER_TEMP}/package-version-api-error.txt"
+          if versions="$(gh api --paginate "/users/${GITHUB_REPOSITORY_OWNER}/packages/maven/${PACKAGE_NAME}/versions?per_page=100" --jq '.[].name' 2>"${api_error}")"; then
+            if grep --fixed-strings --line-regexp --quiet "${version}" <<<"${versions}"; then
+              echo "exists=true" >> "${GITHUB_OUTPUT}"
+              echo "GitHub Packages already contains ${PACKAGE_NAME}:${version}; skipping publish."
+            else
+              echo "exists=false" >> "${GITHUB_OUTPUT}"
+              echo "GitHub Packages does not contain ${PACKAGE_NAME}:${version}; publishing."
+            fi
+          elif grep --quiet "HTTP 404" "${api_error}"; then
+            echo "exists=false" >> "${GITHUB_OUTPUT}"
+            echo "GitHub Packages package ${PACKAGE_NAME} does not exist yet; publishing ${version}."
+          else
+            cat "${api_error}" >&2
+            exit 1
+          fi
       - name: Publish Gradle plugins
+        if: steps.package-version.outputs.exists != 'true'
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.4](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.5.3...v0.5.4) (2026-06-29)
+
+
+### Bug Fixes
+
+* publish only missing package coordinates ([d7246a3](https://github.com/JorisJonkers-dev/gradle-conventions/commit/d7246a389d9d29f99c69fb6a2693993f94df7d9b))
+
 ## [0.5.3](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.5.2...v0.5.3) (2026-06-29)
 
 

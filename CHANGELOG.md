@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.3](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.5.2...v0.5.3) (2026-06-29)
+
+
+### Bug Fixes
+
+* skip existing package publishes ([#9](https://github.com/JorisJonkers-dev/gradle-conventions/issues/9)) ([c31aa1b](https://github.com/JorisJonkers-dev/gradle-conventions/commit/c31aa1b702839ca0f2b653c0a1e99ddf8d30a39c))
+
 ## [0.5.2](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.5.1...v0.5.2) (2026-06-29)
 
 

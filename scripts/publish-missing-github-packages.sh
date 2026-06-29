@@ -31,13 +31,33 @@ package_has_version() {
   return 2
 }
 
-declare -a all_packages=()
+wait_for_package_version() {
+  local package_name="$1"
+
+  for attempt in {1..6}; do
+    set +e
+    package_has_version "${package_name}"
+    result=$?
+    set -e
+
+    case "${result}" in
+      0) return 0 ;;
+      1) ;;
+      *) return 2 ;;
+    esac
+
+    if [[ "${attempt}" -lt 6 ]]; then
+      sleep 5
+    fi
+  done
+
+  return 1
+}
+
 declare -a missing_packages=()
 declare -a missing_tasks=()
 
 while IFS="|" read -r package_name publish_task; do
-  all_packages+=("${package_name}")
-
   set +e
   package_has_version "${package_name}"
   result=$?
@@ -81,36 +101,52 @@ fi
 echo "Publishing missing GitHub Packages coordinates for ${version}:"
 printf ' - %s\n' "${missing_packages[@]}"
 
-set +e
-./gradlew "${missing_tasks[@]}" --no-daemon --no-parallel --max-workers=1
-publish_status=$?
-set -e
+for index in "${!missing_tasks[@]}"; do
+  package_name="${missing_packages[${index}]}"
+  publish_task="${missing_tasks[${index}]}"
 
-if [[ "${publish_status}" -eq 0 ]]; then
-  exit 0
-fi
-
-echo "::warning::Gradle publish failed; rechecking package versions before failing."
-
-declare -a still_missing=()
-for package_name in "${all_packages[@]}"; do
   set +e
   package_has_version "${package_name}"
   result=$?
   set -e
 
   case "${result}" in
-    0) ;;
-    1) still_missing+=("${package_name}") ;;
+    0)
+      echo "GitHub Packages now contains ${package_name}:${version}; skipping ${publish_task}."
+      continue
+      ;;
+    1) ;;
     *) exit 1 ;;
+  esac
+
+  echo "Publishing ${package_name}:${version} with ${publish_task}."
+  set +e
+  ./gradlew "${publish_task}" --no-daemon --no-parallel --max-workers=1
+  publish_status=$?
+  set -e
+
+  if [[ "${publish_status}" -eq 0 ]]; then
+    continue
+  fi
+
+  echo "::warning::${publish_task} failed; rechecking ${package_name}:${version} before failing."
+  set +e
+  wait_for_package_version "${package_name}"
+  result=$?
+  set -e
+
+  case "${result}" in
+    0)
+      echo "${package_name}:${version} exists after the failed publish; treating this coordinate as published."
+      ;;
+    1)
+      echo "::error::${publish_task} failed and ${package_name}:${version} is still missing."
+      exit "${publish_status}"
+      ;;
+    *)
+      exit 1
+      ;;
   esac
 done
 
-if [[ "${#still_missing[@]}" -eq 0 ]]; then
-  echo "All GitHub Packages coordinates for ${version} exist after the failed publish; treating publish as successful."
-  exit 0
-fi
-
-echo "::error::Gradle publish failed and these coordinates are still missing:"
-printf ' - %s\n' "${still_missing[@]}" >&2
-exit "${publish_status}"
+echo "All missing GitHub Packages coordinates for ${version} have been published or already exist."

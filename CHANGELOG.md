@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.5.0...v0.5.1) (2026-06-29)
+
+
+### Bug Fixes
+
+* add shared JVM test warning args ([#5](https://github.com/JorisJonkers-dev/gradle-conventions/issues/5)) ([dc99ae2](https://github.com/JorisJonkers-dev/gradle-conventions/commit/dc99ae29f95fa5233e54b64fd5c0bbce11f2fde8))
+
 ## [0.5.0](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.4.0...v0.5.0) (2026-06-28)
 
 

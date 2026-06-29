@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.2](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.5.1...v0.5.2) (2026-06-29)
+
+
+### Bug Fixes
+
+* bump reusable workflow pins ([80ff2bc](https://github.com/JorisJonkers-dev/gradle-conventions/commit/80ff2bc28d38d35933b04eef8f44a2817c229d55))
+
 ## [0.5.1](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.5.0...v0.5.1) (2026-06-29)
 
 

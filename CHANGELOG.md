@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.6](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.5.5...v0.5.6) (2026-06-30)
+
+
+### Bug Fixes
+
+* **testing:** bump JaCoCo to 0.8.13 for Kotlin value-class coverage ([#16](https://github.com/JorisJonkers-dev/gradle-conventions/issues/16)) ([9f33fdf](https://github.com/JorisJonkers-dev/gradle-conventions/commit/9f33fdfce8d40b1e156fc7482668d5051fd2c893))
+
 ## [0.5.5](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.5.4...v0.5.5) (2026-06-29)
 
 

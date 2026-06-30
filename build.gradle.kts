@@ -16,7 +16,7 @@ group = "dev.jorisjonkers"
 version = releasePleaseVersion()
 
 jacoco {
-    toolVersion = "0.8.12"
+    toolVersion = "0.8.13"
 }
 
 repositories {

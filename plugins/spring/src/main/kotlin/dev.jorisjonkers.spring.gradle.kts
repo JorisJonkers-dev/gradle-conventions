@@ -101,9 +101,8 @@ afterEvaluate {
             implementation(
                 "net.logstash.logback:logstash-logback-encoder:${extratoastSpring.logstashLogbackEncoderVersion.get()}",
             )
-            implementation(
-                "org.springframework.cloud:spring-cloud-starter-vault-config:${extratoastSpring.springCloudVaultVersion.get()}",
-            )
+            val springCloudVaultVersion = extratoastSpring.springCloudVaultVersion.get()
+            implementation("org.springframework.cloud:spring-cloud-starter-vault-config:$springCloudVaultVersion")
         }
     }
 

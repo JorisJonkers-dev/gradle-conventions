@@ -9,6 +9,7 @@ import org.gradle.api.tasks.testing.Test
 import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
 import org.gradle.testing.jacoco.tasks.JacocoReport
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
+import org.jlleitschuh.gradle.ktlint.tasks.BaseKtLintCheckTask
 
 plugins {
     base
@@ -121,7 +122,35 @@ subprojects {
         }
 
         tasks.withType(Detekt::class.java).configureEach {
-            exclude("**/build/**", "**/generated/**")
+            setSource(files("src"))
+            include("**/*.kt", "**/*.kts")
+            exclude("**/build/**", "**/generated/**", "**/generated-sources/**")
+            exclude { fileTreeElement ->
+                fileTreeElement.file
+                    .invariantSeparatorsPath
+                    .contains("/build/")
+            }
+        }
+
+        tasks.withType(BaseKtLintCheckTask::class.java).configureEach {
+            setSource(files("src"))
+            include("**/*.kt", "**/*.kts")
+            exclude("**/build/**", "**/generated/**", "**/generated-sources/**")
+            exclude { fileTreeElement ->
+                fileTreeElement.file
+                    .invariantSeparatorsPath
+                    .contains("/build/")
+            }
+        }
+
+        afterEvaluate {
+            tasks.withType(Detekt::class.java).configureEach {
+                setSource(files("src"))
+            }
+
+            tasks.withType(BaseKtLintCheckTask::class.java).configureEach {
+                setSource(files("src"))
+            }
         }
     }
 }

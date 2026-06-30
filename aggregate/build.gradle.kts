@@ -29,7 +29,7 @@ val testKitJacocoAgent by configurations.creating
 val testKitJacocoDestFile = layout.buildDirectory.file("jacoco/testkit.exec")
 
 dependencies {
-    testKitJacocoAgent("org.jacoco:org.jacoco.agent:0.8.12:runtime")
+    testKitJacocoAgent("org.jacoco:org.jacoco.agent:0.8.13:runtime")
 }
 
 publishing {

@@ -1,4 +1,6 @@
 import groovy.json.JsonSlurper
+import dev.detekt.gradle.Detekt
+import dev.detekt.gradle.extensions.DetektExtension
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
@@ -6,10 +8,14 @@ import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.testing.Test
 import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
 import org.gradle.testing.jacoco.tasks.JacocoReport
+import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
 plugins {
     base
     jacoco
+    id("org.jetbrains.kotlin.jvm") version "2.3.21" apply false
+    id("dev.detekt") version "2.0.0-alpha.3" apply false
+    id("org.jlleitschuh.gradle.ktlint") version "14.2.0" apply false
 }
 
 group = "dev.jorisjonkers"
@@ -94,6 +100,29 @@ subprojects {
 
     tasks.withType(Test::class.java).configureEach {
         useJUnitPlatform()
+    }
+
+    if (path in pluginProjectPaths) {
+        apply(plugin = "dev.detekt")
+        apply(plugin = "org.jlleitschuh.gradle.ktlint")
+
+        extensions.configure<DetektExtension>("detekt") {
+            buildUponDefaultConfig = true
+            allRules = false
+            source.setFrom("src")
+        }
+
+        extensions.configure<KtlintExtension>("ktlint") {
+            android.set(false)
+            filter {
+                include("src/**/*.kt", "src/**/*.kts")
+                exclude("**/build/**", "**/generated/**")
+            }
+        }
+
+        tasks.withType(Detekt::class.java).configureEach {
+            exclude("**/build/**", "**/generated/**")
+        }
     }
 }
 

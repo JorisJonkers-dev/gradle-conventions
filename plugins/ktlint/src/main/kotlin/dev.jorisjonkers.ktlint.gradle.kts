@@ -22,7 +22,9 @@ val extratoastKtlint =
             providers
                 .gradleProperty("extratoast.ktlint.excludes")
                 .map { value -> value.split(",").map(String::trim).filter(String::isNotEmpty) }
-                .orElse(listOf("**/generated/**", "**/build/**")),
+                // `.github-workflows` is a vendored copy of the shared CI actions repo that the
+                // reusable workflows check out beside the sources; it is not the project's code.
+                .orElse(listOf("**/generated/**", "**/build/**", "**/.github-workflows/**")),
         )
     }
 

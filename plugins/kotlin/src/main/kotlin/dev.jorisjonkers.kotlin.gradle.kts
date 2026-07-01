@@ -1,6 +1,10 @@
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.Test
 import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.gradle.process.CommandLineArgumentProvider
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -57,6 +61,22 @@ kotlin {
         allWarningsAsErrors.set(extratoastKotlin.allWarningsAsErrors)
         jvmTarget.set(extratoastKotlin.javaToolchain.map { JvmTarget.fromTarget(it.toString()) })
     }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgumentProviders.add(
+        object : CommandLineArgumentProvider {
+            @get:Input
+            val warningsAsErrors: Provider<Boolean> = extratoastKotlin.allWarningsAsErrors
+
+            override fun asArguments(): Iterable<String> =
+                if (warningsAsErrors.get()) {
+                    listOf("-Werror", "-Xlint:all,-processing")
+                } else {
+                    emptyList()
+                }
+        },
+    )
 }
 
 tasks.withType<Test>().configureEach {

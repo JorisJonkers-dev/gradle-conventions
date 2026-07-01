@@ -106,6 +106,55 @@ class ConventionPluginSmokeTest {
     }
 
     @Test
+    void kotlinPluginFailsJavaCompilationOnDeprecationWarnings() throws IOException {
+        writeSettings("java-warning-smoke");
+        writeBuild(
+            """
+            plugins {
+                id("dev.jorisjonkers.kotlin")
+            }
+
+            repositories {
+                mavenCentral()
+            }
+            """
+        );
+
+        Path sourceDirectory = projectDir.resolve("src/main/java/dev/jorisjonkers/smoke");
+        Files.createDirectories(sourceDirectory);
+        Files.writeString(
+            sourceDirectory.resolve("DeprecatedApi.java"),
+            """
+            package dev.jorisjonkers.smoke;
+
+            public class DeprecatedApi {
+                @Deprecated
+                public static String oldMessage() {
+                    return "deprecated";
+                }
+            }
+            """.stripIndent()
+        );
+        Files.writeString(
+            sourceDirectory.resolve("UsesDeprecatedApi.java"),
+            """
+            package dev.jorisjonkers.smoke;
+
+            public class UsesDeprecatedApi {
+                public String message() {
+                    return DeprecatedApi.oldMessage();
+                }
+            }
+            """.stripIndent()
+        );
+
+        BuildResult result = gradle("compileJava").buildAndFail();
+
+        assertTrue(result.getOutput().contains("-Werror"), "Java warnings should be promoted to errors.");
+        assertTrue(result.getOutput().contains("has been deprecated"), "Java deprecation warnings should be reported.");
+    }
+
+    @Test
     void springPluginAcceptsConfigurableBomInputs() throws IOException {
         writeSettings("spring-bom-smoke");
         writeBuild(

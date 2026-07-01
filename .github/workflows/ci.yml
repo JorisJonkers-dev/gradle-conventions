@@ -34,8 +34,8 @@ jobs:
     with:
       java-version: "21"
       gradle-args: --no-daemon --stacktrace
-      lint-gradle-args: build jacocoTestCoverageVerification
-      test-gradle-args: test
+      lint-gradle-args: assemble detektMain detektTest ktlintCheck validatePlugins
+      test-gradle-args: test jacocoTestCoverageVerification
     secrets:
       packages-token: ${{ secrets.GITHUB_TOKEN }}
 

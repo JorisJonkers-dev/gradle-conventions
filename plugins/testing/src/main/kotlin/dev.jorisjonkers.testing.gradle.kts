@@ -184,7 +184,7 @@ afterEvaluate {
         useJUnitPlatform {
             val excludedTags = extratoastTesting.testExcludedTags.get()
             if (excludedTags.isNotEmpty()) {
-                excludeTags(*excludedTags.toTypedArray())
+                excludedTags.forEach { tag -> excludeTags(tag) }
             }
         }
     }
@@ -194,10 +194,10 @@ afterEvaluate {
             val includedTags = extratoastTesting.integrationTestIncludedTags.get()
             val excludedTags = extratoastTesting.integrationTestExcludedTags.get()
             if (includedTags.isNotEmpty()) {
-                includeTags(*includedTags.toTypedArray())
+                includedTags.forEach { tag -> includeTags(tag) }
             }
             if (excludedTags.isNotEmpty()) {
-                excludeTags(*excludedTags.toTypedArray())
+                excludedTags.forEach { tag -> excludeTags(tag) }
             }
         }
     }

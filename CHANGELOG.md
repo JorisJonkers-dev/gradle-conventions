@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.5.6...v0.6.0) (2026-07-01)
+
+
+### Features
+
+* enforce warnings-as-errors for Kotlin conventions ([#19](https://github.com/JorisJonkers-dev/gradle-conventions/issues/19)) ([8208540](https://github.com/JorisJonkers-dev/gradle-conventions/commit/82085407f132abacbc76532b5c2193d862fd2076))
+
 ## [0.5.6](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.5.5...v0.5.6) (2026-06-30)
 
 

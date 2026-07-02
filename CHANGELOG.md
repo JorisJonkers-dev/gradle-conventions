@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.6.0...v0.7.0) (2026-07-01)
+
+
+### Features
+
+* **ktlint:** exclude vendored .github-workflows tree by default ([#21](https://github.com/JorisJonkers-dev/gradle-conventions/issues/21)) ([1fd788c](https://github.com/JorisJonkers-dev/gradle-conventions/commit/1fd788caf724f5b7338c061b6e9f85c85dab7ab3))
+
 ## [0.6.0](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.5.6...v0.6.0) (2026-07-01)
 
 

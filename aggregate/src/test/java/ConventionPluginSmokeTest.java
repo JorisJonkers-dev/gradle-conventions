@@ -55,6 +55,45 @@ class ConventionPluginSmokeTest {
     }
 
     @Test
+    void detektPluginDoesNotIgnoreFailures() throws IOException {
+        writeSettings("detekt-enforcement-smoke");
+        writeBuild(
+            """
+            plugins {
+                id("dev.jorisjonkers.kotlin")
+                id("dev.jorisjonkers.detekt")
+            }
+
+            repositories {
+                mavenCentral()
+            }
+
+            tasks.register("printDetektEnforcement") {
+                doLast {
+                    tasks.withType(dev.detekt.gradle.Detekt::class.java).forEach { analysis ->
+                        val raw: Any? = analysis.ignoreFailures
+                        val resolved =
+                            if (raw is org.gradle.api.provider.Provider<*>) raw.get() else raw
+                        println("enforcement:" + analysis.name + "=" + resolved)
+                    }
+                }
+            }
+            """
+        );
+
+        BuildResult result = gradle("printDetektEnforcement").build();
+
+        assertTrue(
+            result.getOutput().contains("enforcement:detekt"),
+            "At least one detekt analysis task must be inspected, otherwise this case asserts nothing."
+        );
+        assertFalse(
+            result.getOutput().contains("=true"),
+            "No detekt analysis task may ignore failures; a finding has to fail the build."
+        );
+    }
+
+    @Test
     void ktlintPluginFailsOnFormattingViolations() throws IOException {
         writeSettings("ktlint-violation-smoke");
         writeBuild(

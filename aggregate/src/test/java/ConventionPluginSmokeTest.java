@@ -303,6 +303,90 @@ class ConventionPluginSmokeTest {
     }
 
     @Test
+    void testingPluginFailsCheckWhenCoverageIsBelowTheMinimum() throws IOException {
+        writeSettings("testing-below-minimum-smoke");
+        writeBuild(
+            """
+            plugins {
+                id("dev.jorisjonkers.testing")
+            }
+
+            repositories {
+                mavenCentral()
+            }
+
+            dependencies {
+                testImplementation(platform("org.junit:junit-bom:5.11.4"))
+                testImplementation("org.junit.jupiter:junit-jupiter-api")
+                testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+                testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+            }
+            """
+        );
+        Path sourceDirectory = projectDir.resolve("src/main/java/dev/jorisjonkers/smoke");
+        Files.createDirectories(sourceDirectory);
+        Files.writeString(
+            sourceDirectory.resolve("BarelyCoveredType.java"),
+            """
+            package dev.jorisjonkers.smoke;
+
+            public class BarelyCoveredType {
+                public String covered() {
+                    return "covered";
+                }
+
+                public String uncovered(int value) {
+                    int total = value;
+                    total += 1;
+                    total *= 2;
+                    total -= 3;
+                    String label = "value";
+                    label = label + total;
+                    if (total > 0) {
+                        label = label + "-positive";
+                    }
+                    return label;
+                }
+            }
+            """.stripIndent()
+        );
+        Path testDirectory = projectDir.resolve("src/test/java/dev/jorisjonkers/smoke");
+        Files.createDirectories(testDirectory);
+        Files.writeString(
+            testDirectory.resolve("BarelyCoveredTypeTest.java"),
+            """
+            package dev.jorisjonkers.smoke;
+
+            import static org.junit.jupiter.api.Assertions.assertEquals;
+
+            import org.junit.jupiter.api.Test;
+
+            class BarelyCoveredTypeTest {
+                @Test
+                void coversOnlyOneMethod() {
+                    assertEquals("covered", new BarelyCoveredType().covered());
+                }
+            }
+            """.stripIndent()
+        );
+
+        BuildResult result = gradle("check").buildAndFail();
+
+        assertTrue(
+            result.getOutput().contains("jacocoTestCoverageVerification"),
+            "Coverage verification should be the task that fails the build."
+        );
+        assertTrue(
+            result.getOutput().contains("lines covered ratio is"),
+            "Failure should report the measured line coverage ratio."
+        );
+        assertTrue(
+            result.getOutput().contains("expected minimum is 0.8"),
+            "The default line coverage minimum should be 0.80."
+        );
+    }
+
+    @Test
     void testingPluginCanRegisterCustomIntegrationCoverageGates() throws IOException {
         writeSettings("testing-split-smoke");
         writeBuild(

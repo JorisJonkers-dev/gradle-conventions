@@ -55,6 +55,37 @@ class ConventionPluginSmokeTest {
     }
 
     @Test
+    void ktlintPluginFailsOnFormattingViolations() throws IOException {
+        writeSettings("ktlint-violation-smoke");
+        writeBuild(
+            """
+            plugins {
+                id("dev.jorisjonkers.kotlin")
+                id("dev.jorisjonkers.ktlint")
+            }
+
+            repositories {
+                mavenCentral()
+            }
+            """
+        );
+        Path sourceDirectory = projectDir.resolve("src/main/kotlin/dev/jorisjonkers/smoke");
+        Files.createDirectories(sourceDirectory);
+        Files.writeString(sourceDirectory.resolve("Unformatted.kt"), "package dev.jorisjonkers.smoke\n\nclass Unformatted{fun value()=1}\n");
+
+        BuildResult result = gradle("ktlintCheck").buildAndFail();
+
+        assertTrue(
+            result.getOutput().contains("KtLint found code style violations"),
+            "The build should fail because ktlint found violations, not for another reason."
+        );
+        assertTrue(
+            result.getOutput().contains("Unformatted.kt"),
+            "The violation should be reported against the fixture source file."
+        );
+    }
+
+    @Test
     void springPluginRegistersSpringBootTasks() throws IOException {
         writeSettings("spring-smoke");
         writeBuild(

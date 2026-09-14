@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.7.0...v0.7.1) (2026-08-27)
+
+
+### Bug Fixes
+
+* renormalize gradlew.bat line endings ([#32](https://github.com/JorisJonkers-dev/gradle-conventions/issues/32)) ([174c2b3](https://github.com/JorisJonkers-dev/gradle-conventions/commit/174c2b3c35ab1f4f35eb1d8b5bc1acf7819f93ab))
+
 ## [0.7.0](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.6.0...v0.7.0) (2026-07-01)
 
 

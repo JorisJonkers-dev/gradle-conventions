@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 class ConventionPluginSmokeTest {
+    private static final String FULL_COVERAGE = "-Pextratoast.testing.aggregateCoverageMinimum=1.0";
+
     @TempDir
     Path projectDir;
 
@@ -454,6 +456,123 @@ class ConventionPluginSmokeTest {
             result.getOutput().contains("expected minimum is 0.8"),
             "The default line coverage minimum should be 0.80."
         );
+    }
+
+    @Test
+    void aDataClassNeedsNoTestOfItsGeneratedMembersToPassAFullCoverageGate() throws IOException {
+        writeKotlinCoverageProject("data-class-coverage-smoke");
+        writeKotlin(
+            "src/main/kotlin/dev/jorisjonkers/smoke/Point.kt",
+            """
+            package dev.jorisjonkers.smoke
+
+            data class Point(val x: Int, val y: Int)
+            """
+        );
+        writeKotlin(
+            "src/test/kotlin/dev/jorisjonkers/smoke/PointTest.kt",
+            """
+            package dev.jorisjonkers.smoke
+
+            import org.junit.jupiter.api.Assertions.assertEquals
+            import org.junit.jupiter.api.Test
+
+            class PointTest {
+                @Test
+                fun `a point keeps its coordinates`() {
+                    val point = Point(1, 2)
+                    assertEquals(1, point.x)
+                    assertEquals(2, point.y)
+                }
+            }
+            """
+        );
+
+        BuildResult result = gradle("check", FULL_COVERAGE).build();
+
+        assertTrue(
+            result.getOutput().contains(":jacocoTestCoverageVerification"),
+            "The full coverage gate must run, otherwise passing proves nothing."
+        );
+    }
+
+    @Test
+    void untestedLogicBesideADataClassStillFailsAFullCoverageGate() throws IOException {
+        writeKotlinCoverageProject("data-class-logic-smoke");
+        writeKotlin(
+            "src/main/kotlin/dev/jorisjonkers/smoke/Point.kt",
+            """
+            package dev.jorisjonkers.smoke
+
+            data class Point(val x: Int, val y: Int) {
+                fun sum(): Int {
+                    val total = x + y
+                    val doubled = total * 2
+                    val halved = doubled / 2
+                    return halved
+                }
+
+                fun mirrored(): Point = Point(y, x)
+            }
+            """
+        );
+        writeKotlin(
+            "src/test/kotlin/dev/jorisjonkers/smoke/PointTest.kt",
+            """
+            package dev.jorisjonkers.smoke
+
+            import org.junit.jupiter.api.Assertions.assertEquals
+            import org.junit.jupiter.api.Test
+
+            class PointTest {
+                @Test
+                fun `a point sums its coordinates`() {
+                    assertEquals(3, Point(1, 2).sum())
+                }
+            }
+            """
+        );
+
+        BuildResult result = gradle("check", FULL_COVERAGE).buildAndFail();
+
+        assertTrue(
+            result.getOutput().contains("lines covered ratio is"),
+            "The gate, not another task, must fail on the untested function."
+        );
+        assertTrue(
+            result.getOutput().contains("expected minimum is 1.0"),
+            "Only a full gate catches one untested line among the tested ones."
+        );
+    }
+
+    /** A Kotlin project under the testing convention; FULL_COVERAGE runs it with a 100% line gate. */
+    private void writeKotlinCoverageProject(String name) throws IOException {
+        writeSettings(name);
+        writeBuild(
+            """
+            plugins {
+                id("dev.jorisjonkers.kotlin")
+                id("dev.jorisjonkers.testing")
+            }
+
+            repositories {
+                mavenCentral()
+            }
+
+            dependencies {
+                testImplementation(platform("org.junit:junit-bom:5.11.4"))
+                testImplementation("org.junit.jupiter:junit-jupiter-api")
+                testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+                testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+            }
+            """
+        );
+    }
+
+    private void writeKotlin(String path, String source) throws IOException {
+        Path file = projectDir.resolve(path);
+        Files.createDirectories(file.getParent());
+        Files.writeString(file, source.stripIndent());
     }
 
     @Test

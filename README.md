@@ -33,6 +33,23 @@ compatibility window.
 The aggregate module `dev.jorisjonkers:gradle-conventions:<version>` is also
 published for projects that intentionally consume the complete convention set.
 
+## Coverage
+
+`dev.jorisjonkers.testing` gates line coverage with JaCoCo. The gate does not count code no test
+should exist for:
+
+- **Generated code.** Anything under a `generated` or `jooq` package, and every class or method
+  carrying an annotation whose simple name contains `Generated`.
+- **What the Kotlin compiler writes for a data class.** `equals`, `hashCode`, `toString`, `copy`
+  and `componentN` have no source lines, and JaCoCo ignores them. A data class is covered by
+  constructing it and reading its properties, as any test using it already does.
+
+So never write a test that only calls a data class's generated members: it cannot raise the gate.
+The estate testing standards say the same
+([docs/testing-standards.md](https://github.com/JorisJonkers-dev/workspace/blob/main/docs/testing-standards.md)).
+`ConventionPluginSmokeTest` proves both: a data class passes a 100% gate without such tests, and
+one untested line beside it still fails that gate.
+
 ## Consumption
 
 Add the GitHub Packages Maven repository to the consuming repository's

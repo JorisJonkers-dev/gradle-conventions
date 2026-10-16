@@ -19,7 +19,7 @@ dependencies {
     api(project(":plugins:jooq-codegen"))
 
     testImplementation(gradleTestKit())
-    testImplementation(platform("org.junit:junit-bom:5.11.4"))
+    testImplementation(platform("org.junit:junit-bom:5.14.4"))
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -29,7 +29,7 @@ val testKitJacocoAgent by configurations.creating
 val testKitJacocoDestFile = layout.buildDirectory.file("jacoco/testkit.exec")
 
 dependencies {
-    testKitJacocoAgent("org.jacoco:org.jacoco.agent:0.8.13:runtime")
+    testKitJacocoAgent("org.jacoco:org.jacoco.agent:0.8.15:runtime")
 }
 
 publishing {

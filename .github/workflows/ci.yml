@@ -30,7 +30,7 @@ jobs:
 
   jvm-ci:
     name: JVM CI
-    uses: JorisJonkers-dev/github-workflows/.github/workflows/jvm-ci.yml@v0.12.7
+    uses: JorisJonkers-dev/github-workflows/.github/workflows/jvm-ci.yml@d381be9f4e6f86d62899ffefa415746a42f67e94 # v0.28.0
     with:
       java-version: "21"
       gradle-args: --no-daemon --stacktrace

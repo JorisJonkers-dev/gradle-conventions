@@ -30,14 +30,16 @@ jobs:
 
   jvm-ci:
     name: JVM CI
-    uses: JorisJonkers-dev/github-workflows/.github/workflows/jvm-ci.yml@ab93bf1c435304c5933ab33f9febe087ff8be214 # v0.43.0
+    uses: JorisJonkers-dev/github-workflows/.github/workflows/jvm-ci.yml@2e0d88483fbb70fdb54034c85e9930dec066f906 # v0.45.2
     with:
+      require-package-proxy: true
       java-version: "21"
       gradle-args: --no-daemon --stacktrace
       lint-gradle-args: assemble detektMain detektTest ktlintCheck validatePlugins
       test-gradle-args: test jacocoTestCoverageVerification
     secrets:
       packages-token: ${{ secrets.GITHUB_TOKEN }}
+      PACKAGES_PROXY_TOKEN: ${{ secrets.PACKAGES_PROXY_TOKEN }}
 
   # ---------------------------------------------------------------------------
   # Terminal aggregator. This is the single required check in the ruleset.

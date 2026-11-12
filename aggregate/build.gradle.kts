@@ -25,7 +25,7 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-val testKitJacocoAgent by configurations.creating
+val testKitJacocoAgent = configurations.create("testKitJacocoAgent")
 val testKitJacocoDestFile = layout.buildDirectory.file("jacoco/testkit.exec")
 
 dependencies {

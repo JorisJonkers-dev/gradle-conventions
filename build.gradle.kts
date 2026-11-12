@@ -160,7 +160,7 @@ val jacocoExecutionData =
         include("aggregate/build/jacoco/*.exec")
     }
 
-val jacocoTestReport by tasks.registering(JacocoReport::class) {
+val jacocoTestReport = tasks.register<JacocoReport>("jacocoTestReport") {
     group = "verification"
     description = "Generates Jacoco coverage reports for the convention plugins."
     dependsOn(":aggregate:test")
@@ -171,7 +171,7 @@ val jacocoTestReport by tasks.registering(JacocoReport::class) {
     }
 }
 
-val jacocoTestCoverageVerification by tasks.registering(JacocoCoverageVerification::class) {
+val jacocoTestCoverageVerification = tasks.register<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
     group = "verification"
     description = "Verifies convention plugin line coverage is at least 80%."
     dependsOn(":aggregate:test")

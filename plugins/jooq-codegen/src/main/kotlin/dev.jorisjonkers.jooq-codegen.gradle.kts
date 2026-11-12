@@ -39,74 +39,75 @@ val jooqCodegen =
         )
     }
 
-val generateJooq by tasks.registering {
-    group = "jooq"
-    description = "Generate jOOQ classes from Flyway SQL migrations using DDLDatabase."
+val generateJooq =
+    tasks.register("generateJooq") {
+        group = "jooq"
+        description = "Generate jOOQ classes from Flyway SQL migrations using DDLDatabase."
 
-    val projectDirectory = layout.projectDirectory
-    outputs.dir(jooqCodegen.outputDirectory)
-    inputs.property("schemaName", jooqCodegen.schemaName)
-    inputs.property("packageName", jooqCodegen.packageName)
-    inputs.property("migrationLocations", jooqCodegen.migrationLocations)
-    inputs.files(
-        jooqCodegen.migrationLocations.map { locations ->
-            locations.map { location ->
-                fileTree(projectDirectory.dir(location.removePrefix("filesystem:"))) {
-                    include("**/*.sql")
+        val projectDirectory = layout.projectDirectory
+        outputs.dir(jooqCodegen.outputDirectory)
+        inputs.property("schemaName", jooqCodegen.schemaName)
+        inputs.property("packageName", jooqCodegen.packageName)
+        inputs.property("migrationLocations", jooqCodegen.migrationLocations)
+        inputs.files(
+            jooqCodegen.migrationLocations.map { locations ->
+                locations.map { location ->
+                    fileTree(projectDirectory.dir(location.removePrefix("filesystem:"))) {
+                        include("**/*.sql")
+                    }
                 }
-            }
-        },
-    )
-
-    doLast {
-        val schema = jooqCodegen.schemaName.get()
-        val pkg = jooqCodegen.packageName.get()
-        val outDir =
-            jooqCodegen.outputDirectory
-                .get()
-                .asFile
-                .also { it.mkdirs() }
-
-        val scripts =
-            jooqCodegen.migrationLocations.get().joinToString(";") { location ->
-                val path = location.removePrefix("filesystem:")
-                projectDirectory.dir(path).asFile.absolutePath + "/*.sql"
-            }
-
-        GenerationTool.generate(
-            Configuration()
-                .withGenerator(
-                    Generator()
-                        .withDatabase(
-                            Database()
-                                .withName("org.jooq.meta.extensions.ddl.DDLDatabase")
-                                .withInputSchema(schema)
-                                .withProperties(
-                                    listOf(
-                                        org.jooq.meta.jaxb
-                                            .Property()
-                                            .withKey("scripts")
-                                            .withValue(scripts),
-                                        org.jooq.meta.jaxb
-                                            .Property()
-                                            .withKey("sort")
-                                            .withValue("flyway"),
-                                        org.jooq.meta.jaxb
-                                            .Property()
-                                            .withKey("defaultNameCase")
-                                            .withValue("lower"),
-                                    ),
-                                ).withIncludes(".*")
-                                .withExcludes("flyway_schema_history"),
-                        ).withTarget(
-                            Target()
-                                .withPackageName(pkg)
-                                .withDirectory(outDir.absolutePath),
-                        ),
-                ),
+            },
         )
+
+        doLast {
+            val schema = jooqCodegen.schemaName.get()
+            val pkg = jooqCodegen.packageName.get()
+            val outDir =
+                jooqCodegen.outputDirectory
+                    .get()
+                    .asFile
+                    .also { it.mkdirs() }
+
+            val scripts =
+                jooqCodegen.migrationLocations.get().joinToString(";") { location ->
+                    val path = location.removePrefix("filesystem:")
+                    projectDirectory.dir(path).asFile.absolutePath + "/*.sql"
+                }
+
+            GenerationTool.generate(
+                Configuration()
+                    .withGenerator(
+                        Generator()
+                            .withDatabase(
+                                Database()
+                                    .withName("org.jooq.meta.extensions.ddl.DDLDatabase")
+                                    .withInputSchema(schema)
+                                    .withProperties(
+                                        listOf(
+                                            org.jooq.meta.jaxb
+                                                .Property()
+                                                .withKey("scripts")
+                                                .withValue(scripts),
+                                            org.jooq.meta.jaxb
+                                                .Property()
+                                                .withKey("sort")
+                                                .withValue("flyway"),
+                                            org.jooq.meta.jaxb
+                                                .Property()
+                                                .withKey("defaultNameCase")
+                                                .withValue("lower"),
+                                        ),
+                                    ).withIncludes(".*")
+                                    .withExcludes("flyway_schema_history"),
+                            ).withTarget(
+                                Target()
+                                    .withPackageName(pkg)
+                                    .withDirectory(outDir.absolutePath),
+                            ),
+                    ),
+            )
+        }
     }
-}
 
 sourceSets {
     main {

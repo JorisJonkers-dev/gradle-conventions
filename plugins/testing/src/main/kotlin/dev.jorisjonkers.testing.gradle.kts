@@ -137,23 +137,27 @@ tasks.jacocoTestReport {
     }
 }
 
-val jacocoIntegrationTestReport by tasks.registering(JacocoReport::class) {
-    dependsOn(integrationTest)
-    executionData.setFrom(layout.buildDirectory.file("jacoco/$integrationTestTaskName.exec"))
-    reports {
-        xml.required.set(true)
-        xml.outputLocation.set(
-            layout.buildDirectory.file("reports/jacoco/jacocoIntegrationTestReport/jacocoIntegrationTestReport.xml"),
-        )
-        html.required.set(true)
-        html.outputLocation.set(layout.buildDirectory.dir("reports/jacoco/jacocoIntegrationTestReport/html"))
+val jacocoIntegrationTestReport =
+    tasks.register<JacocoReport>("jacocoIntegrationTestReport") {
+        dependsOn(integrationTest)
+        executionData.setFrom(layout.buildDirectory.file("jacoco/$integrationTestTaskName.exec"))
+        reports {
+            xml.required.set(true)
+            xml.outputLocation.set(
+                layout.buildDirectory.file(
+                    "reports/jacoco/jacocoIntegrationTestReport/jacocoIntegrationTestReport.xml",
+                ),
+            )
+            html.required.set(true)
+            html.outputLocation.set(layout.buildDirectory.dir("reports/jacoco/jacocoIntegrationTestReport/html"))
+        }
     }
-}
 
-val jacocoIntegrationTestCoverageVerification by tasks.registering(JacocoCoverageVerification::class) {
-    dependsOn(integrationTest)
-    executionData.setFrom(layout.buildDirectory.file("jacoco/$integrationTestTaskName.exec"))
-}
+val jacocoIntegrationTestCoverageVerification =
+    tasks.register<JacocoCoverageVerification>("jacocoIntegrationTestCoverageVerification") {
+        dependsOn(integrationTest)
+        executionData.setFrom(layout.buildDirectory.file("jacoco/$integrationTestTaskName.exec"))
+    }
 
 tasks.jacocoTestCoverageVerification {
     dependsOn(tasks.test)

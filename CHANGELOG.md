@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.2](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.7.1...v0.7.2) (2026-11-12)
+
+
+### Bug Fixes
+
+* **hygiene:** never cancel a run of the required hygiene checks ([#56](https://github.com/JorisJonkers-dev/gradle-conventions/issues/56)) ([08a9797](https://github.com/JorisJonkers-dev/gradle-conventions/commit/08a979772a1cbc91043ec691e26b31a45135428d))
+
 ## [0.7.1](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.7.0...v0.7.1) (2026-08-27)
 
 

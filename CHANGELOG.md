@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.4](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.7.3...v0.7.4) (2026-11-20)
+
+
+### Bug Fixes
+
+* **ci:** cancel superseded runs and skip label events ([#60](https://github.com/JorisJonkers-dev/gradle-conventions/issues/60)) ([87a460f](https://github.com/JorisJonkers-dev/gradle-conventions/commit/87a460f7c8068f350f67da1f10e626335aa1f8f7))
+
 ## [0.7.3](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.7.2...v0.7.3) (2026-11-20)
 
 

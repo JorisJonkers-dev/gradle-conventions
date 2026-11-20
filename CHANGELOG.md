@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.3](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.7.2...v0.7.3) (2026-11-20)
+
+
+### Bug Fixes
+
+* **ci:** pass the packages proxy token to the Gradle wrapper in the publish jobs ([#62](https://github.com/JorisJonkers-dev/gradle-conventions/issues/62)) ([036294f](https://github.com/JorisJonkers-dev/gradle-conventions/commit/036294f5509412a0064d5eb7c0c566e53d87209f))
+
 ## [0.7.2](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.7.1...v0.7.2) (2026-11-12)
 
 

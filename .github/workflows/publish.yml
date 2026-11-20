@@ -19,10 +19,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+      # The wrapper downloads Gradle from the packages proxy, which needs the proxy token.
+      - uses: JorisJonkers-dev/github-workflows/actions/setup-java-gradle@b14d5e031f1abd5bec45e50c898e9e73f3ffc534 # v0.50.4
         with:
-          distribution: temurin
           java-version: '21.0.13+9.0.LTS'
+          packages-proxy-token: ${{ secrets.PACKAGES_PROXY_TOKEN }}
+          require-package-proxy: true
       - name: Publish missing Gradle packages
         env:
           GITHUB_ACTOR: ${{ github.actor }}

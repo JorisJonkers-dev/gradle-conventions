@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.7.3](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.7.2...v0.7.3) (2026-11-20)
+
+
+### Bug Fixes
+
+* **ci:** pass the packages proxy token to the Gradle wrapper in the publish jobs ([#62](https://github.com/JorisJonkers-dev/gradle-conventions/issues/62)) ([036294f](https://github.com/JorisJonkers-dev/gradle-conventions/commit/036294f5509412a0064d5eb7c0c566e53d87209f))
+
+## [0.7.2](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.7.1...v0.7.2) (2026-11-12)
+
+
+### Bug Fixes
+
+* **hygiene:** never cancel a run of the required hygiene checks ([#56](https://github.com/JorisJonkers-dev/gradle-conventions/issues/56)) ([08a9797](https://github.com/JorisJonkers-dev/gradle-conventions/commit/08a979772a1cbc91043ec691e26b31a45135428d))
+
 ## [0.7.1](https://github.com/JorisJonkers-dev/gradle-conventions/compare/v0.7.0...v0.7.1) (2026-08-27)
 
 

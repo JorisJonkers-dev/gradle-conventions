@@ -54,7 +54,7 @@ jobs:
         with:
           ref: ${{ needs.release-please.outputs.tag_name }}
       # The wrapper downloads Gradle from the packages proxy, which needs the proxy token.
-      - uses: JorisJonkers-dev/github-workflows/actions/setup-java-gradle@b14d5e031f1abd5bec45e50c898e9e73f3ffc534 # v0.50.4
+      - uses: JorisJonkers-dev/github-workflows/actions/setup-java-gradle@658bec7f448631fbaa3f28d3a2e5708390e0c4c1 # v0.51.0
         with:
           java-version: "21.0.13+9.0.LTS"
           packages-proxy-token: ${{ secrets.PACKAGES_PROXY_TOKEN }}
